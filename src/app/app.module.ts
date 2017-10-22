@@ -4,7 +4,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';// TODO: 想法去掉
+import { AuthService } from './theme/services/AuthService/auth.service';
+import { AUTH_PROVIDERS } from 'angular2-jwt';
 /*
  * Platform and Environment providers/directives/pipes
  */
@@ -21,7 +23,8 @@ import { PagesModule } from './pages/pages.module';
 // Application wide providers
 const APP_PROVIDERS = [
   AppState,
-  GlobalState
+  GlobalState,
+  AuthService  
 ];
 
 export type StoreType = {
@@ -50,7 +53,8 @@ export type StoreType = {
     routing
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
-    APP_PROVIDERS
+    APP_PROVIDERS,
+    AUTH_PROVIDERS
   ]
 })
 
