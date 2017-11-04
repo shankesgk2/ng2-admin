@@ -5,8 +5,10 @@ import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';// TODO: 想法去掉
-import { AuthService } from './theme/services/AuthService/auth.service';
-import { AUTH_PROVIDERS } from 'angular2-jwt';
+import { AuthGuard } from './theme/services/AuthService';
+
+import { JwtModule } from '@auth0/angular-jwt';
+import { HttpClientModule } from '@angular/common/http';
 /*
  * Platform and Environment providers/directives/pipes
  */
@@ -18,13 +20,17 @@ import { AppState, InternalStateType } from './app.service';
 import { GlobalState } from './global.state';
 import { NgaModule } from './theme/nga.module';
 import { PagesModule } from './pages/pages.module';
+import { AuthModule } from './theme/auth.module';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
+//Application interceptor
+import {RequestInterceptor, ResponseInterceptor} from './theme/interceptor';
 
 // Application wide providers
 const APP_PROVIDERS = [
   AppState,
   GlobalState,
-  AuthService  
+  AuthGuard
 ];
 
 export type StoreType = {
@@ -50,11 +56,34 @@ export type StoreType = {
     NgaModule.forRoot(),
     NgbModule.forRoot(),
     PagesModule,
-    routing
+    AuthModule,
+    HttpClientModule,
+    routing,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: () => {
+          return localStorage.getItem('access_token');
+        },
+        whitelistedDomains: ['localhost:4200'],
+        headerName: 'Authorization',
+        authScheme: 'Bearer ',
+        throwNoTokenError: true,
+        skipWhenExpired: true
+      }
+    })
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     APP_PROVIDERS,
-    AUTH_PROVIDERS
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: RequestInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ResponseInterceptor,
+      multi: true,
+    }
   ]
 })
 

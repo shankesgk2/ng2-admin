@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {FormGroup, AbstractControl, FormBuilder, Validators} from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'login',
@@ -15,7 +16,7 @@ export class Login {
 
   constructor(fb:FormBuilder) {
     this.form = fb.group({
-      'email': ['', Validators.compose([Validators.required, Validators.minLength(4)])],
+      'email': ['', Validators.compose([Validators.required, Validators.minLength(8)])],
       'password': ['', Validators.compose([Validators.required, Validators.minLength(4)])]
     });
 
@@ -23,9 +24,11 @@ export class Login {
     this.password = this.form.controls['password'];
   }
 
-  public onSubmit(values:Object):void {
+  public onSubmit(values:Object, http:HttpClientModule):void {
     this.submitted = true;
     if (this.form.valid) {
+      http.get(url).subscribe(...)
+      alert('sdf');
       // your code goes here
       // console.log(values);
     }

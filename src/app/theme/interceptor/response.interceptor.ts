@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()
-class APIInterceptor implements HttpInterceptor {
+export class ResponseInterceptor implements HttpInterceptor {
 
   constructor() { }
 
