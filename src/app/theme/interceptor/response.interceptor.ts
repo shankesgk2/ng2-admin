@@ -11,8 +11,9 @@ export class ResponseInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     req = req.clone({
+      url: 'http://www.ds.com/api/admin/' + req.url,
       setHeaders: {
-        Accept: 'application/vnd.ds.v1+json'
+        'Accept': 'application/vnd.ds.v1+json'
       }
     });
     return next.handle(req);

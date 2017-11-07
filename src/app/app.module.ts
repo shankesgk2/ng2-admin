@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';// TODO: 想法去掉
 import { AuthGuard } from './theme/services/AuthService';
 
 import { JwtModule } from '@auth0/angular-jwt';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 /*
  * Platform and Environment providers/directives/pipes
  */
@@ -20,8 +20,6 @@ import { AppState, InternalStateType } from './app.service';
 import { GlobalState } from './global.state';
 import { NgaModule } from './theme/nga.module';
 import { PagesModule } from './pages/pages.module';
-import { AuthModule } from './theme/auth.module';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 //Application interceptor
 import {RequestInterceptor, ResponseInterceptor} from './theme/interceptor';
@@ -38,7 +36,9 @@ export type StoreType = {
   restoreInputValues: () => void,
   disposeOldHosts: () => void
 };
-
+export function tokenGetter() {
+  return localStorage.getItem('token');
+}
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
@@ -56,18 +56,15 @@ export type StoreType = {
     NgaModule.forRoot(),
     NgbModule.forRoot(),
     PagesModule,
-    AuthModule,
     HttpClientModule,
     routing,
     JwtModule.forRoot({
       config: {
-        tokenGetter: () => {
-          return localStorage.getItem('access_token');
-        },
-        whitelistedDomains: ['localhost:4200'],
+        tokenGetter: tokenGetter,
+        // whitelistedDomains: ['localhost:4200', 'ds.com', 'www.ds.com'],
         headerName: 'Authorization',
         authScheme: 'Bearer ',
-        throwNoTokenError: true,
+        throwNoTokenError: false,
         skipWhenExpired: true
       }
     })

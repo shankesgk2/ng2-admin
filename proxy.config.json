@@ -1,0 +1,5 @@
+{
+    "/api/admin/": {
+        "target": "http://www.ds.com/api/admin/"
+    }
+}

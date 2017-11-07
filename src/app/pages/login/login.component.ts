@@ -1,6 +1,6 @@
-import {Component} from '@angular/core';
-import {FormGroup, AbstractControl, FormBuilder, Validators} from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { Component } from '@angular/core';
+import { FormGroup, AbstractControl, FormBuilder, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'login',
@@ -8,29 +8,27 @@ import { HttpClientModule } from '@angular/common/http';
   styleUrls: ['./login.scss']
 })
 export class Login {
+  public form: FormGroup;
+  public username: AbstractControl;
+  public password: AbstractControl;
+  public submitted: boolean = false;
 
-  public form:FormGroup;
-  public email:AbstractControl;
-  public password:AbstractControl;
-  public submitted:boolean = false;
-
-  constructor(fb:FormBuilder) {
+  constructor(fb: FormBuilder,private http: HttpClient) {
     this.form = fb.group({
-      'email': ['', Validators.compose([Validators.required, Validators.minLength(8)])],
+      'username': ['', Validators.compose([Validators.required, Validators.minLength(8)])],
       'password': ['', Validators.compose([Validators.required, Validators.minLength(4)])]
     });
 
-    this.email = this.form.controls['email'];
+    this.username = this.form.controls['username'];
     this.password = this.form.controls['password'];
   }
 
-  public onSubmit(values:Object, http:HttpClientModule):void {
+  public onSubmit(values: Object): void {
     this.submitted = true;
+    // values.observe = 'response';
     if (this.form.valid) {
-      http.get(url).subscribe(...)
-      alert('sdf');
-      // your code goes here
-      // console.log(values);
+      console.log(values);
+      this.http.post('login', values).subscribe(data => console.log(data));
     }
   }
 }
