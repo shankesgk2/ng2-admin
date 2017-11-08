@@ -61,7 +61,7 @@ export function tokenGetter() {
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        // whitelistedDomains: ['localhost:4200', 'ds.com', 'www.ds.com'],
+        whitelistedDomains: ['localhost:4200', 'ds.com', 'www.ds.com'],
         headerName: 'Authorization',
         authScheme: 'Bearer ',
         throwNoTokenError: false,

@@ -1,21 +1,23 @@
-import { HttpEvent, HttpHandler, HttpRequest } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 
-import { HttpInterceptor } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import { Observable } from 'rxjs/Observable';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class ResponseInterceptor implements HttpInterceptor {
 
-  constructor() { }
+    constructor(private router: Router) { }
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    req = req.clone({
-      url: 'http://www.ds.com/api/admin/' + req.url,
-      setHeaders: {
-        'Accept': 'application/vnd.ds.v1+json'
-      }
-    });
-    return next.handle(req);
-  }
+    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+
+        return next.handle(req).map(event => {
+            if (event instanceof HttpResponse) {
+                if (event.status === 401) {
+                    console.log('401');
+                }
+            }
+            return event;
+        })
+    }
 }
